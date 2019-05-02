@@ -116,25 +116,24 @@ namespace EvaInfo
         private void PositionPane()
         {
             bool newInFrame = false;
+            EvaInfoSettings settings = EvaInfoAddon.Instance.settings;
             float distance = Vector3.Dot((headTransform.position - camera.transform.position), camera.transform.forward);
-            //if (distance => distmin && distance <= distmax)
+            if (distance >= settings.nearClipDistance && distance <= settings.farClipDistance)
             {
-                Vector2 headPoint = (Vector2) camera.WorldToScreenPoint(headTransform.position);
-                //if (EvaInfoAddon.Instance.inFrameX(headPoint.x))
+                Vector2 screenPoint = (Vector2) camera.WorldToScreenPoint(headTransform.position);
+                float helmetHeight = HelmetRadius * Screen.height / (2.0f * distance * Mathf.Tan(camera.fieldOfView * 0.5f * Mathf.Deg2Rad));
+                screenPoint.y += helmetHeight;
+                if (TestInFrame(screenPoint))
                 {
                     float scale = 1.0f;
-                    // if (distance > scaledist)
-                    //     scale = ( (distmax - distance) / (distmax - scaledist) * (1.0f - scalemin) ) + scalemin;
-                    // bottom level offset = bottom ? level height * scale : 0
-                    float helmetHeight = HelmetRadius * Screen.height / (2.0f * distance * Mathf.Tan(camera.fieldOfView * 0.5f * Mathf.Deg2Rad));
-                    Vector2 screenPoint = headPoint + new Vector2(0, helmetHeight + 10); // TODO: + EvaInfoAddon.offsetHeight + bottom level offset
-                    //if (EvaInfoAddon.Instance.inFrameY(screenPoint.y))
-                    {
-                        newInFrame = true;
-                        canvas.planeDistance = distance;
-                        panelRootTransform.localScale = scale * Vector3.one;
-                        panelRootTransform.anchoredPosition = screenPoint;
-                    }
+                    if (settings.scaleWithDistance && distance > settings.scaleStartDistance)
+                        scale = ( (settings.farClipDistance - distance) / (settings.farClipDistance - settings.scaleStartDistance) * (1.0f - settings.scaleAtFarClip) ) + settings.scaleAtFarClip;
+                    screenPoint.y += scale * (settings.OffsetHeight + settings.BottomRankOffset);
+
+                    newInFrame = true;
+                    canvas.planeDistance = distance;
+                    panelRootTransform.localScale = scale * Vector3.one;
+                    panelRootTransform.anchoredPosition = screenPoint;
                 }
             }
             if (isInFrame != newInFrame)
@@ -142,6 +141,17 @@ namespace EvaInfo
                 isInFrame = newInFrame;
                 UpdateVisibility();
             }
+        }
+
+        // lax test for whether screenpoint is a position where info pane would be at least partially visible
+        private bool TestInFrame(Vector2 screenpoint)
+        {
+            float paneSize = EvaInfoAddon.Instance.settings.iconPaneSize;
+            if (screenpoint.x < -paneSize/2 || screenpoint.x > (Screen.width + paneSize/2))
+                return false;
+            if (screenpoint.y < -(EvaInfoAddon.Instance.settings.OffsetHeight + paneSize) || screenpoint.y > Screen.height)
+                return false;
+            return true;
         }
 
         private void CleanupPane()
