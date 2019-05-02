@@ -7,7 +7,7 @@
         internal int iconSize = 28;
 
         // offset of pane base from "top" of helmet as proportion of iconPaneSize
-        internal float offsetFactor = 0.5f;
+        internal float offsetFactor = 0.35f;
         internal float OffsetHeight {
             get { return offsetFactor * iconPaneSize; }
         }
