@@ -66,22 +66,22 @@ namespace EvaInfo
 
             switch (HighLogic.LoadedScene)
             {
-            case GameScenes.FLIGHT:
-                stockButton = ApplicationLauncher.Instance.AddModApplication(
-                    (delegate {
-                        ShowInfo = true;
-                        stockButton.SetTexture(toolbarBtnOn);
-                    }),
-                    (delegate {
-                        ShowInfo = false;
-                        stockButton.SetTexture(toolbarBtnOff);
-                    }),
-                    null, null, // TODO tooltip?
-                    null, null,
-                    ApplicationLauncher.AppScenes.FLIGHT,
-                    toolbarBtnOff
-                );
-                break;
+                case GameScenes.FLIGHT:
+                    stockButton = ApplicationLauncher.Instance.AddModApplication(
+                        (delegate {
+                            ShowInfo = true;
+                            stockButton.SetTexture(toolbarBtnOn);
+                        }),
+                        (delegate {
+                            ShowInfo = false;
+                            stockButton.SetTexture(toolbarBtnOff);
+                        }),
+                        null, null, // TODO tooltip?
+                        null, null,
+                        ApplicationLauncher.AppScenes.FLIGHT,
+                        toolbarBtnOff
+                    );
+                    break;
             }
         }
 
