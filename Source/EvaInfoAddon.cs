@@ -10,7 +10,7 @@ namespace EvaInfo
         internal static bool foundCTI = true;
 
         internal static EventVoid onToggleInfo = new EventVoid("onToggleInfo");
-        private static bool _showInfo = true;
+        private static bool _showInfo;
         internal static bool ShowInfo {
             get { return _showInfo; }
             private set {
@@ -47,12 +47,15 @@ namespace EvaInfo
             toolbarBtnOn = GameDatabase.Instance.GetTexture("EvaInfo/icons/button/icon-48-on", false);
             toolbarBtnOff = GameDatabase.Instance.GetTexture("EvaInfo/icons/button/icon-48-off", false);
             GameEvents.onGUIApplicationLauncherReady.Add(OnAppLauncherReady);
+
+            GameEvents.onGameSceneSwitchRequested.Add(OnGameSceneSwitchRequested);
         }
 
         private void OnDestroy()
         {
             GameEvents.onGUIApplicationLauncherReady.Remove(OnAppLauncherReady);
             GameEvents.onGUIApplicationLauncherUnreadifying.Remove(OnAppLauncherUnreadifying);
+            GameEvents.onGameSceneSwitchRequested.Remove(OnGameSceneSwitchRequested);
             Instance = null;
         }
 
@@ -92,6 +95,16 @@ namespace EvaInfo
             }
             GameEvents.onGUIApplicationLauncherUnreadifying.Remove(OnAppLauncherUnreadifying);
             GameEvents.onGUIApplicationLauncherReady.Add(OnAppLauncherReady);
+        }
+
+        private void OnGameSceneSwitchRequested(GameEvents.FromToAction<GameScenes,GameScenes> data)
+        {
+            switch (data.from)
+            {
+                case GameScenes.FLIGHT:
+                    ShowInfo = false;
+                    break;
+            }
         }
 
         internal static void Log(string s)
