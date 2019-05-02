@@ -23,6 +23,8 @@ namespace EvaInfo
         private Texture toolbarBtnOn, toolbarBtnOff;
         private ApplicationLauncherButton stockButton;
 
+        internal EvaInfoSettings settings;
+
         private void Start()
         {
             if (Instance != null || !foundCTI)
@@ -48,6 +50,7 @@ namespace EvaInfo
             toolbarBtnOff = GameDatabase.Instance.GetTexture("EvaInfo/icons/button/icon-48-off", false);
             GameEvents.onGUIApplicationLauncherReady.Add(OnAppLauncherReady);
 
+            GameEvents.onLevelWasLoaded.Add(OnLevelWasLoaded);
             GameEvents.onGameSceneSwitchRequested.Add(OnGameSceneSwitchRequested);
         }
 
@@ -55,6 +58,7 @@ namespace EvaInfo
         {
             GameEvents.onGUIApplicationLauncherReady.Remove(OnAppLauncherReady);
             GameEvents.onGUIApplicationLauncherUnreadifying.Remove(OnAppLauncherUnreadifying);
+            GameEvents.onLevelWasLoaded.Remove(OnLevelWasLoaded);
             GameEvents.onGameSceneSwitchRequested.Remove(OnGameSceneSwitchRequested);
             Instance = null;
         }
@@ -95,6 +99,11 @@ namespace EvaInfo
             }
             GameEvents.onGUIApplicationLauncherUnreadifying.Remove(OnAppLauncherUnreadifying);
             GameEvents.onGUIApplicationLauncherReady.Add(OnAppLauncherReady);
+        }
+
+        private void OnLevelWasLoaded(GameScenes scene)
+        {
+            if (!HighLogic.LoadedSceneIsGame) settings = null;
         }
 
         private void OnGameSceneSwitchRequested(GameEvents.FromToAction<GameScenes,GameScenes> data)
