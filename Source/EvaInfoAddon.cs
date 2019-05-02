@@ -20,7 +20,7 @@ namespace EvaInfo
             }
         }
 
-        private Texture toolbarBtnOn, toolbarBtnOff;
+        private Texture toolbarBtnOn, toolbarBtnOff, toolbarBtnCog;
         private ApplicationLauncherButton stockButton;
 
         internal EvaInfoSettings settings;
@@ -48,6 +48,7 @@ namespace EvaInfo
 
             toolbarBtnOn = GameDatabase.Instance.GetTexture("EvaInfo/icons/button/icon-48-on", false);
             toolbarBtnOff = GameDatabase.Instance.GetTexture("EvaInfo/icons/button/icon-48-off", false);
+            toolbarBtnCog = GameDatabase.Instance.GetTexture("EvaInfo/icons/button/icon-48-cog", false);
             GameEvents.onGUIApplicationLauncherReady.Add(OnAppLauncherReady);
 
             GameEvents.onLevelWasLoaded.Add(OnLevelWasLoaded);
@@ -70,6 +71,19 @@ namespace EvaInfo
 
             switch (HighLogic.LoadedScene)
             {
+                case GameScenes.SPACECENTER:
+                    stockButton = ApplicationLauncher.Instance.AddModApplication(
+                        (delegate {
+                            // TODO launch settings window
+                            stockButton.SetFalse();
+                        }),
+                        null,
+                        null, null, // TODO tooltip?
+                        null, null,
+                        ApplicationLauncher.AppScenes.SPACECENTER,
+                        toolbarBtnCog
+                    );
+                    break;
                 case GameScenes.FLIGHT:
                     stockButton = ApplicationLauncher.Instance.AddModApplication(
                         (delegate {
@@ -110,6 +124,9 @@ namespace EvaInfo
         {
             switch (data.from)
             {
+                case GameScenes.SPACECENTER:
+                    // TODO check and close dangling settings window
+                    break;
                 case GameScenes.FLIGHT:
                     ShowInfo = false;
                     break;
