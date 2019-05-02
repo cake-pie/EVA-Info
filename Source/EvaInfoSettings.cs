@@ -69,7 +69,7 @@
         {
         }
 
-        internal static EvaInfoSettings LoadPreset()
+        internal static EvaInfoSettings FetchPreset()
         {
             EvaInfoSettings result = new EvaInfoSettings();
             //result.Load(presetNode);
@@ -85,17 +85,17 @@
         {
         }
 
-        internal static EvaInfoSettings LoadDefault()
+        internal static EvaInfoSettings FetchDefault()
         {
             return new EvaInfoSettings();
         }
 
-        internal static EvaInfoSettings LoadPresetOrDefault()
+        internal static EvaInfoSettings FetchPresetOrDefault()
         {
             //if preset exists
-            //    return LoadPreset()
+            //    return FetchPreset()
             //else
-            return LoadDefault();
+            return FetchDefault();
         }
     }
 }

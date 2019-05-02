@@ -6,7 +6,7 @@
         public override void OnLoad(ConfigNode node)
         {
             //if new game (empty node)
-            EvaInfoAddon.Instance.settings = EvaInfoSettings.LoadPresetOrDefault();
+            EvaInfoAddon.Instance.settings = EvaInfoSettings.FetchPresetOrDefault();
             //else
             //    EvaInfoAddon.Instance.Settings = EvaInfoAddon.Instance.Settings ?? new EvaInfoSettings();
             //    EvaInfoAddon.Instance.Settings.Load(node);
