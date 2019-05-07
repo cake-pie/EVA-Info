@@ -1,4 +1,6 @@
-﻿namespace EvaInfo
+﻿using UnityEngine;
+
+namespace EvaInfo
 {
     public class EvaInfoSettings
     {
@@ -44,10 +46,71 @@
 
         // rank graphic - star, chevron, etc
         // TODO
+        private string rankGraphic = "EvaInfo/icons/rank/horizontal/starsH02";
+        internal string RankGraphic {
+            get { return rankGraphic; }
+            set {
+                Texture2D tex = GameDatabase.Instance.GetTexture(value, false);
+                if (tex == null) return;
+                rankGraphic = value;
+                rankTexture = tex;
+            }
+        }
+        private Texture2D rankTexture;
+        internal Texture2D RankTexture {
+            get {
+                if (rankTexture == null)
+                    rankTexture = GameDatabase.Instance.GetTexture(rankGraphic, false);
+                return rankTexture;
+            }
+        }
+        internal float RankAspectRatio {
+            get {
+                if (RankTexture == null) return 0;
+                switch (rankPosition)
+                {
+                    case RankPosition.TOP:
+                    case RankPosition.BOTTOM:
+                        return (RankTexture.height/6f) / RankTexture.width;
+                    case RankPosition.LEFT:
+                    case RankPosition.RIGHT:
+                        return (RankTexture.width/6f) / RankTexture.height;
+                    default:
+                        return 0;
+                }
+            }
+        }
+        internal Sprite RankSprite(int level)
+        {
+            if (RankTexture == null) return null;
+            float spriteW = 0;
+            float spriteH = 0;
+            switch (rankPosition)
+            {
+                case RankPosition.TOP:
+                case RankPosition.BOTTOM:
+                    spriteW = RankTexture.width;
+                    spriteH = RankTexture.height / 6f;
+                    return Sprite.Create(RankTexture,
+                        new Rect(0, level * spriteH, spriteW, spriteH),
+                        Vector2.one * 0.5f, 100f, 0,
+                        SpriteMeshType.FullRect);
+                case RankPosition.LEFT:
+                case RankPosition.RIGHT:
+                    spriteW = RankTexture.width / 6f;
+                    spriteH = RankTexture.height;
+                    return Sprite.Create(RankTexture,
+                        new Rect(level * spriteW, 0, spriteW, spriteH),
+                        Vector2.one * 0.5f, 100f, 0,
+                        meshType: SpriteMeshType.FullRect);
+                default:
+                return null;
+            }
+        }
 
         // offset required to compensate for rank graphic placed bottom outside
-        internal int BottomRankOffset {
-            get { return (rankPosition == RankPosition.BOTTOM && rankPlacement == RankPlacement.OUTSIDE) ? 10 : 0; }
+        internal float BottomRankOffset {
+            get { return (rankPosition == RankPosition.BOTTOM && rankPlacement == RankPlacement.OUTSIDE) ? (iconSize * RankAspectRatio) : 0; }
         }
 
         // force show rank when ExperienceSystem off

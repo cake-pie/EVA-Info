@@ -33,6 +33,21 @@ namespace EvaInfo
             iconRT.pivot = Vector2.one * 0.5f;
             iconRT.sizeDelta = Vector2.one * settings.iconSize;
             iconRT.anchoredPosition = Vector2.zero;
+
+            // TODO only show if using experience / settings.showSuperfluousRank
+            GameObject rankGO = new GameObject("rankPane");
+            RectTransform rankRT = rankGO.AddComponent<RectTransform>();
+            Image rankIMG = rankGO.AddComponent<Image>();
+            rankIMG.sprite = settings.RankSprite(pcm.experienceLevel);
+            rankRT.SetParent(iconPaneRT, false);
+            rankRT.anchorMin = Vector2.one * 0.5f;
+            rankRT.anchorMax = Vector2.one * 0.5f;
+            // TODO use settings
+            //settings.rankPosition;
+            //settings.rankPlacement;
+            rankRT.pivot = new Vector2(0.5f, 0);
+            rankRT.sizeDelta = new Vector2(settings.iconSize, settings.RankAspectRatio * settings.iconSize);
+            rankRT.anchoredPosition = new Vector2(0, settings.iconPaneSize/2);
         }
 
         internal void updateName(){
